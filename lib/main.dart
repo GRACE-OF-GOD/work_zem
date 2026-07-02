@@ -1,4 +1,4 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'ecran_accueil.dart';
 
 void main() {
@@ -11,22 +11,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'WorkZem',
       debugShowCheckedModeBanner: false,
-      title: 'WorkZem Wallet',
-
       theme: ThemeData(
-        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00B14F),
+          seedColor: const Color(0xFF1565C0),
         ),
-
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF16213E),
-          foregroundColor: Colors.white,
-          centerTitle: true,
-        ),
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'Roboto',
       ),
-
       home: const EcranAccueil(),
     );
   }
