@@ -1,5 +1,5 @@
- import 'package:flutter/material.dart';
-import 'authentification.dart';
+import 'package:flutter/material.dart';
+import 'welcome_page.dart'; // Import de ta première page
 
 void main() {
   runApp(const WorkZemApp());
@@ -11,15 +11,13 @@ class WorkZemApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WorkZem',
+      title: 'Work_Zem',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1565C0),
-        ),
-        fontFamily: 'Roboto',
+        scaffoldBackgroundColor: Colors.white,
+        primarySwatch: Colors.blue,
       ),
-      home: const AuthentificationPage(),
+      home: const WelcomePage(), // Point d'entrée de ton app
     );
   }
 }
