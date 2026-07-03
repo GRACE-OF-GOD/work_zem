@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:flutter/services.dart';
+=======
+import 'ecran_accueil.dart';
+>>>>>>> feat/ecran-acceuil
 
 void main() {
   runApp(const PaymentMobileApp());
@@ -11,6 +15,7 @@ class PaymentMobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+<<<<<<< HEAD
       debugShowCheckedModeBanner: false,
       title: 'Paiement Mobile',
       theme: ThemeData(
@@ -471,3 +476,18 @@ class _CountryConfig {
     required this.icon,
   });
 }
+=======
+      title: 'WorkZem',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF1565C0),
+        ),
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'Roboto',
+      ),
+      home: const EcranAccueil(),
+    );
+  }
+}
+>>>>>>> feat/ecran-acceuil
