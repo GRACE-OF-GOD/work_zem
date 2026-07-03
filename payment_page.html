@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paiement Mobile</title>
+  <style>
+    /* =========================
+       CSS - Palette et styles généraux
+       ========================= */
+    :root {
+      --orange-1: #E67E22;
+      --orange-2: #F39C12;
+      --orange-3: #D35400;
+      --blue-1: #1A5276;
+      --blue-2: #2E86C1;
+      --blue-3: #2980B9;
+      --white: #FFFFFF;
+      --white-soft: #F8F9FA;
+      --gray: #E5E7EB;
+      --gray-dark: #6B7280;
+      --text: #23374D;
+      --shadow: 0 12px 30px rgba(26, 82, 118, 0.12);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Inter, Arial, sans-serif;
+      background: linear-gradient(135deg, var(--white-soft) 0%, #eaf6ff 50%, #fff5e8 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.8);
+      animation: fadeIn 0.35s ease;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      color: var(--white);
+      padding: 24px;
+      text-align: center;
+    }
+
+    .hero .icon {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 10px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      font-size: 1.7rem;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.4rem, 2vw, 1.8rem);
+    }
+
+    .hero p {
+      margin: 0;
+      opacity: 0.95;
+      font-size: 0.98rem;
+    }
+
+    .content {
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px;
+      border: 1px solid var(--gray);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: var(--blue-1);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .section-title .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+    }
+
+    .choices, .operators-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .choice-btn, .operator-btn {
+      border: 2px solid var(--gray);
+      background: var(--white);
+      color: var(--blue-1);
+      border-radius: 14px;
+      padding: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: center;
+    }
+
+    .choice-btn:hover, .operator-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--blue-2);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+    }
+
+    .choice-btn.active {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      color: var(--white);
+      border-color: var(--blue-2);
+    }
+
+    .operator-btn.active {
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      color: var(--white);
+      border-color: var(--orange-2);
+    }
+
+    .operator-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 50px;
+    }
+
+    .form-group {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    label {
+      font-weight: 600;
+      color: var(--blue-1);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--gray);
+      background: var(--white-soft);
+      outline: none;
+      font-size: 1rem;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    input:focus {
+      border-color: var(--blue-2);
+      box-shadow: 0 0 0 3px rgba(46,134,193,0.17);
+    }
+
+    .hint, .error {
+      font-size: 0.9rem;
+    }
+
+    .hint { color: var(--gray-dark); }
+    .error { color: #C0392B; min-height: 18px; }
+
+    .summary {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(46,134,193,0.09), rgba(230,126,34,0.08));
+      border: 1px solid rgba(46,134,193,0.15);
+      display: grid;
+      gap: 8px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.95rem;
+    }
+
+    .summary-item strong { color: var(--blue-1); }
+
+    .actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .pay-btn {
+      border: none;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      color: var(--white);
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(230,126,34,0.18);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    .pay-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(230,126,34,0.25);
+    }
+
+    .pay-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,20,30,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal.open { display: flex; animation: fadeIn 0.2s ease; }
+
+    .modal-box {
+      background: var(--white);
+      width: min(100%, 480px);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-box h3 { margin: 8px 0 10px; color: var(--blue-1); }
+    .modal-box p { color: var(--gray-dark); line-height: 1.6; }
+
+    .close-btn {
+      margin-top: 12px;
+      border: none;
+      background: var(--blue-2);
+      color: var(--white);
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media (max-width: 700px) {
+      .choices, .operators-grid { grid-template-columns: 1fr; }
+      .content { padding: 16px; }
+      .hero { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Conteneur principal -->
+  <main class="container" role="main">
+    <!-- En-tête de la page -->
+    <header class="hero">
+      <div class="icon" aria-hidden="true">💳</div>
+      <h1>Paiement mobile sécurisé</h1>
+      <p>Choisissez votre pays, votre opérateur et validez votre paiement en quelques secondes.</p>
+    </header>
+
+    <!-- Corps du formulaire -->
+    <section class="content">
+      <!-- Sélection du pays -->
+      <section class="card" aria-labelledby="country-title">
+        <div class="section-title">
+          <span class="dot"></span>
+          <h2 id="country-title">Choisissez votre pays</h2>
+        </div>
+        <div class="choices" id="countries"></div>
+      </section>
+
+      <!-- Sélection de l'opérateur -->
+      <section class="card" aria-labelledby="operator-title">
+        <div class="section-title">
+          <span class="dot"></span>
+          <h2 id="operator-title">Choisissez votre opérateur</h2>
+        </div>
+        <div class="operators-grid" id="operators"></div>
+      </section>
+
+      <!-- Saisie du numéro -->
+      <section class="card" aria-labelledby="phone-title">
+        <div class="section-title">
+          <span class="dot"></span>
+          <h2 id="phone-title">Numéro de téléphone</h2>
+        </div>
+        <div class="form-group">
+          <label for="phone">Numéro</label>
+          <input id="phone" name="phone" type="tel" inputmode="numeric" placeholder="Exemple : 90123456" />
+          <div class="hint" id="phoneHint">Format attendu selon le pays sélectionné.</div>
+          <div class="error" id="phoneError" role="alert" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- Récapitulatif et paiement -->
+      <section class="card" aria-labelledby="summary-title">
+        <div class="section-title">
+          <span class="dot"></span>
+          <h2 id="summary-title">Récapitulatif</h2>
+        </div>
+        <div class="form-group">
+          <label for="amount">Montant (FCFA)</label>
+          <input id="amount" name="amount" type="number" min="100" step="100" value="1000" />
+        </div>
+        <div class="summary" aria-live="polite">
+          <div class="summary-item"><span>Pays</span><strong id="summaryCountry">—</strong></div>
+          <div class="summary-item"><span>Opérateur</span><strong id="summaryOperator">—</strong></div>
+          <div class="summary-item"><span>Numéro</span><strong id="summaryPhone">—</strong></div>
+          <div class="summary-item"><span>Montant</span><strong id="summaryAmount">1 000 FCFA</strong></div>
+        </div>
+        <div class="actions">
+          <button id="payBtn" class="pay-btn" disabled>Payer</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Modale de confirmation -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div aria-hidden="true" style="font-size: 2rem;">✅</div>
+      <h3 id="modalTitle">Paiement initié</h3>
+      <p id="modalMessage"></p>
+      <button class="close-btn" id="closeModalBtn">Fermer</button>
+    </div>
+  </div>
+
+  <script>
+    /* =========================
+       JS - Logique de l'interface
+       ========================= */
+    const countriesData = {
+      Bénin: { operators: ['Moov', 'MTN', 'Orange Money'], digits: 8, example: '90123456' },
+      "Côte d'Ivoire": { operators: ['Orange', 'MTN', 'Moov'], digits: 10, example: '0708123456' },
+      Togo: { operators: ['Moov', 'Togocom', 'Orange Money'], digits: 8, example: '90123456' }
+    };
+
+    const countriesEl = document.getElementById('countries');
+    const operatorsEl = document.getElementById('operators');
+    const phoneInput = document.getElementById('phone');
+    const phoneHint = document.getElementById('phoneHint');
+    const phoneError = document.getElementById('phoneError');
+    const amountInput = document.getElementById('amount');
+    const payBtn = document.getElementById('payBtn');
+    const summaryCountry = document.getElementById('summaryCountry');
+    const summaryOperator = document.getElementById('summaryOperator');
+    const summaryPhone = document.getElementById('summaryPhone');
+    const summaryAmount = document.getElementById('summaryAmount');
+    const modal = document.getElementById('modal');
+    const modalMessage = document.getElementById('modalMessage');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    let selectedCountry = null;
+    let selectedOperator = null;
+    let phoneValid = false;
+
+    function renderCountries() {
+      countriesEl.innerHTML = '';
+      Object.keys(countriesData).forEach((country) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'choice-btn';
+        btn.textContent = country;
+        if (selectedCountry === country) btn.classList.add('active');
+        btn.addEventListener('click', () => {
+          selectedCountry = country;
+          selectedOperator = null;
+          phoneInput.value = '';
+          phoneValid = false;
+          phoneError.textContent = '';
+          phoneHint.textContent = `Exemple : ${countriesData[country].example}`;
+          renderCountries();
+          renderOperators();
+          updateSummary();
+          updatePayButton();
+        });
+        countriesEl.appendChild(btn);
+      });
+    }
+
+    function renderOperators() {
+      operatorsEl.innerHTML = '';
+      if (!selectedCountry) {
+        operatorsEl.innerHTML = '<div style="grid-column: 1 / -1; color: #6B7280;">Sélectionnez d’abord un pays.</div>';
+        return;
+      }
+
+      countriesData[selectedCountry].operators.forEach((operator) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'operator-btn';
+        btn.innerHTML = `<span>${getOperatorIcon(operator)}</span><span>${operator}</span>`;
+        if (selectedOperator === operator) btn.classList.add('active');
+        btn.addEventListener('click', () => {
+          selectedOperator = operator;
+          renderOperators();
+          updateSummary();
+          updatePayButton();
+        });
+        operatorsEl.appendChild(btn);
+      });
+    }
+
+    function getOperatorIcon(operator) {
+      const icons = { Moov: '📶', MTN: '📱', 'Orange Money': '💳', Orange: '📞', Togocom: '📡' };
+      return icons[operator] || '📲';
+    }
+
+    function validatePhone(number) {
+      if (!selectedCountry) return { valid: false, message: 'Sélectionnez d’abord un pays.' };
+      const clean = number.replace(/\D/g, '');
+      const expectedDigits = countriesData[selectedCountry].digits;
+      if (!/^\d+$/.test(number)) return { valid: false, message: 'Le numéro ne doit contenir que des chiffres.' };
+      if (clean.length !== expectedDigits) return { valid: false, message: `Le numéro doit contenir ${expectedDigits} chiffres pour ${selectedCountry}.` };
+      return { valid: true, message: '' };
+    }
+
+    function updateSummary() {
+      summaryCountry.textContent = selectedCountry || '—';
+      summaryOperator.textContent = selectedOperator || '—';
+
+      if (phoneInput.value.trim() && phoneValid) {
+        summaryPhone.textContent = maskPhone(phoneInput.value.replace(/\D/g, ''));
+      } else {
+        summaryPhone.textContent = '—';
+      }
+
+      const amount = amountInput.value || '1000';
+      summaryAmount.textContent = `${Number(amount).toLocaleString('fr-FR')} FCFA`;
+    }
+
+    function maskPhone(phone) {
+      if (phone.length <= 4) return phone;
+      return `${phone.slice(0, 2)}****${phone.slice(-2)}`;
+    }
+
+    function updatePayButton() {
+      payBtn.disabled = !(selectedCountry && selectedOperator && phoneValid);
+    }
+
+    phoneInput.addEventListener('input', () => {
+      const result = validatePhone(phoneInput.value);
+      phoneValid = result.valid;
+      phoneError.textContent = result.message;
+      updateSummary();
+      updatePayButton();
+    });
+
+    amountInput.addEventListener('input', updateSummary);
+
+    payBtn.addEventListener('click', () => {
+      if (!selectedCountry || !selectedOperator || !phoneValid) return;
+      const amount = Number(amountInput.value || 1000).toLocaleString('fr-FR');
+      const maskedPhone = maskPhone(phoneInput.value.replace(/\D/g, ''));
+      modalMessage.innerHTML = `✅ Paiement de <strong>${amount} FCFA</strong> initié via <strong>${selectedOperator}</strong> pour <strong>${selectedCountry}</strong> au numéro <strong>${maskedPhone}</strong>.`;
+      modal.classList.add('open');
+    });
+
+    closeModalBtn.addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+
+    renderCountries();
+    renderOperators();
+    updateSummary();
+    updatePayButton();
+  </script>
+</body>
+</html>
